@@ -1,0 +1,34 @@
+version: '3.4'
+
+services:
+  mongo:
+    image: mongo:3.4
+    logging:
+      options:
+        max-size: 50m  
+
+  web:
+    build: 
+      context: "."
+      network: host
+      args:
+        CLIMATE_ENV: "development"
+    ports:
+     - "8082:8080"
+    environment:
+     - MONGODB_URI=mongodb://mongo:27017/dev 
+    links:
+     - mongo 
+     - backend
+    depends_on: 
+     - mongo 
+     - backend
+    volumes:
+     - .:/starter
+     - /starter/node_modules
+    command: nodemon -e js,pug app.js
+    logging:
+      options:
+        max-size: 50m
+
+     
